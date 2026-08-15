@@ -1,0 +1,31 @@
+{
+ "label": "l3-3bit-mtp3",
+ "model": "qwen38",
+ "reasoning_effort": "low",
+ "max_tokens": 256,
+ "rows": [
+  {
+   "depth": 8192,
+   "approx_prompt_tokens": 8252,
+   "prompt_tokens": 15656,
+   "completion_tokens": 256,
+   "elapsed_s": 4.7,
+   "decode_tok_s": 54.9,
+   "found": false,
+   "max_consecutive_repeat": 232,
+   "finish_reason": "length",
+   "answer_in": "neither",
+   "outcome": "DEGENERATE"
+  },
+  {
+   "depth": 65536,
+   "outcome": "error",
+   "detail": "HTTP Error 500: Internal Server Error"
+  },
+  {
+   "depth": 131072,
+   "outcome": "error",
+   "detail": "HTTP Error 500: Internal Server Error"
+  }
+ ]
+}

@@ -336,6 +336,65 @@ single-stream and ~197 aggregate at 4-way concurrency. Our arm A measured **51.5
 | `--gpu-memory-utilization 0.98` | 0.90 | they call 0.98 the practical ceiling on 32 GB — **but it will not boot on a Windows desktop**, see below |
 | `--max-num-batched-tokens 512` | default | note this is the **opposite** of Spark Arena's 16384 — they optimise for context, Spark Arena for throughput. Neither transfers blindly |
 
+### Attempting 262k here: what actually happened
+
+Three arms at `--max-model-len 262144`, `--kv-cache-memory-bytes 5368709120`,
+`--max-num-seqs 4`, `--max-num-batched-tokens 512`, `gpu-memory-utilization 0.94`
+(0.98 will not boot here — see gotchas):
+
+| Arm | KV dtype | MTP | Boot | KV pool | Short prompts | d=8192 | d=65536 | d=131072 |
+|---|---|---|---|---|---|---|---|---|
+| **L1** | `turboquant_4bit_nc` | no | ✅ | **306,325 tok** (1.17×) | clean | **PASS**, 22.8 tok/s | OOM | OOM |
+| **L2** | `turboquant_4bit_nc` | K3 | ❌ | — | — | — | — | — |
+| **L3** | `turboquant_3bit_nc` | K3 | ✅ | **331,129 tok** (1.26×) | clean | **DEGENERATE**, rep=232 | OOM | OOM |
+
+**L1 partially reproduces their recipe.** The 306,325-token KV pool matches their reported
+figure exactly, the TurboQuant backend engages (`Using TURBOQUANT attention backend`), and
+8k recall passes cleanly. But 64k and 131k both die with
+`RuntimeError: CUDA driver error: out of memory`.
+
+**Why we cannot reach their 262k, and it is not their fault.** The Windows shell holds
+~1.4 GiB of VRAM, capping us at `gpu-memory-utilization 0.94`. Activation headroom for
+prefill is what is left after weights and the KV pin:
+
+| | budget | − weights | − KV pin | = activations |
+|---|---|---|---|---|
+| Their setup (0.98) | 31.21 GiB | 22.1 | 5.0 | **~4.1 GiB** |
+| Ours (0.94, Windows desktop) | 29.93 GiB | 22.1 | 5.0 | **~2.8 GiB** |
+
+That 1.3 GiB gap is what fails at 64k prefill. **A headless Linux box would very likely
+reproduce their result; a Windows desktop does not have the VRAM to spare.**
+
+**L2 misses by 20 MB.** `ValueError: To serve at least one request with the model's max seq
+len (262144), (5.02 GiB KV cache is needed, which is larger than the available KV cache
+memory (5.0 GiB)`. MTP + 4-bit KV at 262k needs **5.02 GiB** against their 5.00 GiB pin — so
+"MTP doesn't fit at 4-bit" is nearly wrong: raising the pin slightly would boot it, though
+that comes straight out of the activation headroom that is already short.
+
+### L3: the MTP garbling reproduced — and it is an interaction, not MTP alone
+
+**L3 degenerated at an 8k prompt: a single token repeated 232 times consecutively**, with
+the needle found in neither `content` nor `reasoning`. That is precisely the collapse the
+TurboQuant calibration log describes.
+
+Critically, **L3 passed the short-prompt check cleanly** (`4`, `Paris.`) immediately before
+degenerating on the 8k prompt. Short probes are not sufficient evidence that a config is
+sound.
+
+Put beside our other measurement, this sharpens the picture rather than simply confirming it:
+
+| KV dtype | Context | MTP | Result |
+|---|---|---|---|
+| **fp8** | 32k | K3 | **clean** — GSM8K 97.0%, zero discordant items vs no-MTP |
+| **3-bit turboquant** | 262k cfg | K3 | **degenerate** at an 8k prompt, rep=232 |
+
+Their conclusion was *"MTP + this model's KV path is the garbler, not the KV quant itself."*
+Our data suggests it is specifically the **interaction of MTP with aggressively quantized
+KV**: with fp8 KV, MTP is provably lossless here; with 3-bit KV it collapses. We have not
+tested MTP with 4-bit KV (L2 would not boot), which is the gap between the two claims.
+
+**Practical upshot: use MTP with fp8 KV. Do not combine MTP with 3-bit KV.**
+
 ### Their MTP warning — and why we still recommend it
 
 Their calibration log rejects MTP outright:

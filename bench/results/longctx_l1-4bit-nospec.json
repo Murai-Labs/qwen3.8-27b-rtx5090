@@ -1,0 +1,31 @@
+{
+ "label": "l1-4bit-nospec",
+ "model": "qwen38",
+ "reasoning_effort": "low",
+ "max_tokens": 256,
+ "rows": [
+  {
+   "depth": 8192,
+   "approx_prompt_tokens": 8252,
+   "prompt_tokens": 15656,
+   "completion_tokens": 108,
+   "elapsed_s": 4.7,
+   "decode_tok_s": 22.8,
+   "found": true,
+   "max_consecutive_repeat": 1,
+   "finish_reason": "stop",
+   "answer_in": "content",
+   "outcome": "PASS"
+  },
+  {
+   "depth": 65536,
+   "outcome": "error",
+   "detail": "HTTP Error 500: Internal Server Error"
+  },
+  {
+   "depth": 131072,
+   "outcome": "error",
+   "detail": "<urlopen error [Errno 111] Connection refused>"
+  }
+ ]
+}
