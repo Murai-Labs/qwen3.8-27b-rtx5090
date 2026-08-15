@@ -109,11 +109,16 @@ def main():
         rep = max_consecutive_repeat(c)
         pt = usage.get("prompt_tokens")
         ct = usage.get("completion_tokens")
+        # NOT a decode rate: this is completion_tokens over TOTAL elapsed, so it
+        # includes prefill. At 124k prompt tokens prefill dominates and this
+        # number reads ~2.5 while actual decode is ~40x that. Named honestly so
+        # it cannot be quoted as a decode figure -- measuring true decode here
+        # would need streaming TTFT, which this probe does not do.
         tps = (ct / el) if (ct and el) else 0
         status = "PASS" if found and rep <= 8 else ("DEGENERATE" if rep > 8 else "FAIL")
         rows.append({"depth": d, "approx_prompt_tokens": approx, "prompt_tokens": pt,
                      "completion_tokens": ct, "elapsed_s": round(el, 1),
-                     "decode_tok_s": round(tps, 1), "found": found,
+                     "tok_s_incl_prefill": round(tps, 1), "found": found,
                      "max_consecutive_repeat": rep, "finish_reason": fr,
                      "answer_in": ("content" if gold in c else
                                    "reasoning" if gold in rc else "neither"),
