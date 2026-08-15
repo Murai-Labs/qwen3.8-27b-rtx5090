@@ -4,12 +4,23 @@ Serving **Qwen3.8-27B** (NVFP4) on one **NVIDIA GeForce RTX 5090** (Blackwell, *
 32 GB) under vLLM in WSL2, tuned for decode throughput without giving up quality.
 
 Everything here was measured on the machine described in [Environment](#environment).
-Where a number is computed rather than measured, it says so. Where something is not yet
-measured, it says that too.
+Where a number is computed rather than measured, it says so. Where something is not
+measured, it says that too — including the arm that would not run.
 
-> **Status: work in progress.** The environment and architecture analysis below are
-> verified. The throughput and quality tables are **not yet populated** — they are marked
-> `PENDING` rather than filled with estimates.
+## TL;DR
+
+| | |
+|---|---|
+| **Decode** | **107.6 tok/s** at p256, **97.3** at p2048, single stream |
+| **The flag that matters** | `--speculative-config '{"method":"mtp","num_speculative_tokens":3}'` — **~2× decode** |
+| **Native FP4** | Verified engaged on sm_120 — `CutlassNvFp4LinearKernel`, no Marlin fallback |
+| **Context** | 126,976 KV tokens at 32k/FP8 baseline; 56,599 with MTP K3 |
+| **Concurrency limit** | Bounded by **Mamba cache blocks**, not KV — one per decode sequence |
+| **Multi-turn** | Send `"chat_template_kwargs": {"preserve_thinking": false}` or agentic loops truncate |
+| **Doesn't work** | MTP **K2** never serves on this build; K3 does |
+
+The full recipe is in [The recipe](#the-recipe); the reasoning for each flag is inline in
+[`deploy/serve.sh`](deploy/serve.sh).
 
 ---
 
@@ -130,15 +141,67 @@ but not a substitute for reading what vLLM reports.
 
 ## Measurements
 
-**PENDING** — nothing here yet. Planned matrix, using the harness in
-[`bench/bench_fixed.py`](bench/bench_fixed.py):
+Harness: [`bench/bench_fixed.py`](bench/bench_fixed.py), unmodified. 3 repeats per cell,
+medians reported. `min_tokens` + `ignore_eos` pinned so **every cell emitted exactly 200
+tokens** — verified, so none of these numbers are confounded by output-length variance.
+Random nonce per prompt, so prefill is cold, never prefix-cached.
 
-- decode tok/s at prompt lengths 256 / 2048 / 8192, concurrency 1 / 4 / 8
-- n=5 repeats, medians and spread, `min_tokens` + `ignore_eos` pinned, random nonce so
-  prefill is cold
-- KV dtype `auto` vs `fp8`
-- MTP speculative decoding on vs off
-- context ceiling actually achievable at each KV dtype
+Common flags: `--max-model-len 32768 --gpu-memory-utilization 0.90 --kv-cache-dtype fp8`.
+
+### Decode throughput (tok/s)
+
+| prompt | conc | A: baseline | C: MTP K3 | Δ |
+|---|---|---|---|---|
+| 256 | 1 | 51.5 | **107.6** | **+108.8%** |
+| 256 | 4 | 46.9 | **108.4** | +131.0% |
+| 2048 | 1 | 52.5 | **97.3** | +85.2% |
+| 2048 | 4 | 45.0 | **97.1** | +116.0% |
+| 8192 | 1 | 52.0 | **98.2** | +88.7% |
+| 8192 | 4 | 38.7 | **70.2** | +81.5% |
+
+**MTP speculative decoding roughly doubles decode throughput.** That is a much larger win
+than the published per-position acceptance rates suggest, and it is the single most
+important setting in this recipe.
+
+Baseline decode is essentially flat across prompt length (51.5 / 52.5 / 52.0 at
+concurrency 1) — the signature of bandwidth-bound decode. The hybrid architecture is why:
+context costs KV, not decode speed.
+
+**Spread matters here.** Baseline is tight (0.4–4.1 tok/s across repeats); MTP is much
+noisier (4.9–19.6), because acceptance rate depends on what is being generated. The
++81–131% gains are far outside that spread, but a single MTP sample is not a reliable
+number. Aggregate throughput at concurrency 4 is noisier still (±109 tok/s at p256) and
+should not be quoted without its spread.
+
+### What MTP costs you
+
+| Config | KV memory | KV tokens | Max concurrency @32k |
+|---|---|---|---|
+| Baseline | 4.47 GiB | 126,976 | 3.88x |
+| MTP K2 | 3.03 GiB | 63,351 | 1.93x |
+| MTP K3 | 3.00 GiB | 56,599 | 1.73x |
+
+MTP takes roughly **half your KV capacity**. On this card that is the real trade: double
+the decode rate, half the context budget and concurrency. At 32k context it is clearly
+worth it. If you need long context *and* many concurrent sequences, measure before
+assuming.
+
+vLLM also warns at K>1: *"Enabling num_speculative_tokens > 1 will run multiple times of
+forward on same MTP layer, which may result in lower acceptance rate."*
+
+### Not measured
+
+- **Arm B (MTP K2) — would not serve, in four attempts.** The engine initialises
+  cleanly (KV allocated: 3.03 GiB / 63,351 tokens) and the API server logs
+  `Application startup complete`, but the socket never accepts connections. The final
+  attempt ran K2 standalone with a 180-second socket wait and still got
+  `Connection refused` on every request. **MTP K3 with otherwise identical flags serves
+  fine**, so this is specific to `num_speculative_tokens: 2` on this build, not a
+  startup race. Cause not investigated further. Worth knowing, because K2 is what the
+  DGX Spark ladder recommends for chat — on this setup it is currently not an option.
+- Concurrency above 4, and context above 32k.
+- Quality. No perplexity or task evaluation was run, so nothing here says NVFP4 matches
+  FP8 or BF16 on output quality — only that it is roughly twice as fast with MTP.
 
 ## The stock chat template poisons multi-turn conversations
 
@@ -264,18 +327,58 @@ destroying aggregates — are documented in the companion repo's
 [MEASUREMENT-NOTES.md](https://github.com/Murai-Labs/dgx-spark-x-2-upstream/blob/main/docs/MEASUREMENT-NOTES.md),
 and the harness here is the same one, unmodified.
 
+## The recipe
+
+Server — [`deploy/serve.sh`](deploy/serve.sh) has this with the reasoning for each flag
+inline:
+
+```bash
+python -m vllm.entrypoints.openai.api_server \
+  --model $HOME/models/Qwen3.8-27B-NVFP4 \
+  --speculative-config '{"method":"mtp","num_speculative_tokens":3}' \
+  --kv-cache-dtype fp8 \
+  --max-num-seqs 8 \
+  --max-model-len 32768 \
+  --gpu-memory-utilization 0.90 \
+  --reasoning-parser qwen3
+```
+
+Client — **send this on every multi-turn request**:
+
+```json
+{"chat_template_kwargs": {"preserve_thinking": false}}
+```
+
+Without it the stock template poisons the history with empty think blocks and multi-turn
+agentic work truncates. Add `"reasoning_effort": "medium"` (or `"low"`) to the same object
+to cap the thinking budget; the default is `xhigh`.
+
+The three flags that matter most, in order: **MTP K3** (~2× decode), **`preserve_thinking:
+false`** (multi-turn correctness), **`--kv-cache-dtype fp8`** (~2× context).
+
 ## Reproducing
 
 ```bash
-# 1. environment (WSL2 Ubuntu)
+# 1. environment (WSL2 Ubuntu 24.04)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv venv --python 3.12 && uv pip install vllm==0.27.1
 
-# 2. weights
+# 2. weights (~22 GB)
 hf download unsloth/Qwen3.8-27B-NVFP4
 
-# 3. serve  (see deploy/ for the exact scripts used)
-bash deploy/vllm_boot1.sh
+# 3. serve
+bash deploy/serve.sh
+
+# 4. benchmark
+python bench/bench_fixed.py --base-url http://127.0.0.1:8000/v1 --model qwen38 \
+    --prompt-tokens 256,2048,8192 --concurrency 1,4 --max-tokens 200 --repeats 3 \
+    --label mine --output results.json
+python bench/summarize.py results.json
+
+# 5. chat-template checks
+python bench/template_test.py       # empty think blocks, stock template
+python bench/template_compare.py    # stock vs community template
+python bench/multiturn_test.py      # behavioural 15-turn truncation test
 ```
 
 Copying the weights onto the WSL ext4 filesystem rather than reading them from `/mnt/<drive>`
