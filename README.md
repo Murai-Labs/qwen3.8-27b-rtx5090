@@ -217,6 +217,38 @@ reasoning instruction entirely — **less** steering than the default, with no e
 | **`medium`** | **60 chars** | **none** |
 | `low` | 226 chars | low |
 
+## Optional: fp16 SSM state (+18.6% context, quality unproven)
+
+`--mamba-ssm-cache-dtype float16` halves the GDN recurrent state, which is what bounds
+concurrency on this hybrid:
+
+| | fp32 SSM (default) | fp16 SSM |
+|---|---|---|
+| KV pool @32k | 83,409 tok | **98,934 tok (+18.6%)** |
+| Max concurrency | 2.55x | **3.02x** |
+| Decode p256 / p2048 | 103.8 / 91.1 | 99.0 / 96.6 (within spread) |
+| GSM8K, n=200 paired | 97.0% | 96.5% |
+| Paired vs control | — | both 193, **only-control 1, only-fp16 0**, p=1.0 |
+
+vLLM warns that this overrides the model's declared `mamba_ssm_dtype='float32'`. One item
+flipped, against fp16. **Contrast with MTP, which had zero discordant items across 200** —
+that was a positive demonstration of losslessness; this is only an absence of detectable harm
+at n=200. Recurrent-state error *accumulates across tokens* (unlike KV error, which stays
+per-token), which is the shape early degradation would take. Offered as an option for
+context-bound workloads, **not promoted to the default.**
+
+`--enable-mamba-cache-stochastic-rounding` — the pairing NVIDIA recommends for fp16 state —
+crashed the server ~32 s after startup here (`Cannot close a running event loop`), untested
+further.
+
+### `--attention-backend` is silently ignored
+
+Both `--attention-backend TRITON_ATTN` and `VLLM_ATTENTION_BACKEND=TRITON_ATTN` were accepted
+and had no effect; vLLM logs `potential backends: ['FLASHINFER', 'TRITON_ATTN']` and then
+selects FlashInfer regardless. Same failure pattern as `reasoning_effort=medium`: a setting
+accepted and then ignored. All measurements here are therefore on FlashInfer, which is what
+this model actually gets on sm_120.
+
 ## Gotchas
 
 | Symptom | Cause | Fix |
