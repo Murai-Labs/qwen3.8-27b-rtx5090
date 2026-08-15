@@ -104,9 +104,26 @@ into repetition collapse.
 | turboquant 3-bit | no | **garbled**, rep=232 | 4/4, two pin sizes |
 | turboquant, MTP K1 | no | **engine crash** (HTTP 500) | 4/4 |
 
-Degeneration means a single token repeated 224–232 times with the answer in neither `content`
+Degeneration means a single token repeated 224–234 times with the answer in neither `content`
 nor `reasoning`. **These configs passed a short-prompt check moments before collapsing on an
 8k prompt** — short probes are not evidence.
+
+**The obvious alternative explanation was tested and eliminated.** vLLM
+[#51562](https://github.com/vllm-project/vllm/issues/51562) reports that when
+`--max-num-batched-tokens` falls below the mamba block size, a request can read another's
+leftover recurrent state — silent garbage, not a crash. Every one of our garbling runs used
+mnbt 512 (the TurboQuant recipe's value) and every clean run used the 2048 default, so this
+was a live confound. Holding KV dtype and MTP fixed and varying only mnbt:
+
+| mnbt | attention block size | result |
+|---|---|---|
+| 512 | 3120 | DEGENERATE rep=232, 2/2 |
+| 2048 | 3120 | DEGENERATE rep=230, 2/2 |
+| **4096** (above the block size) | 3120 | DEGENERATE rep=234, 2/2 |
+
+Identical collapse at all three, including with mnbt **above** the block size where the
+#51562 precondition does not hold. The KV dtype is the variable. Total evidence: **12/12
+garbled runs** across 3 mnbt values, 2 KV widths and 2 pin sizes.
 
 **Important counter-evidence:** [AtomicChat](https://huggingface.co/AtomicChat/Qwen3.8-27B-GGUF)
 report MTP running fine with `q4_0` KV at 160k on **llama.cpp**. If quantized KV broke MTP
