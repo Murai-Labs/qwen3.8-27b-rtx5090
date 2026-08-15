@@ -386,6 +386,35 @@ items every time, which is what makes pairing valid), the `</think>` stripping a
 extraction pass a case table including unclosed think blocks, and McNemar correctly
 recovers a synthetic 5-point effect at p=0.013.
 
+### Result: GSM8K, NVFP4 + MTP K3
+
+| | |
+|---|---|
+| Accuracy | **97.0%** (95% CI 93.6–98.6), n=200 |
+| correct / incorrect / **no_answer** / error | 194 / 6 / **0** / 0 |
+| `finish_reason` | `stop` on **all 200** |
+| `think_closed` | True on all 200 |
+| Median completion tokens | 242 |
+| Wall clock | 112 s |
+
+Config: `reasoning_effort=low`, `max_tokens=2048`, `temperature=0`,
+`preserve_thinking=false`, fp8 KV, 32k context.
+
+**Zero `no_answer` and zero truncation is the load-bearing part**, not the 97%. It is the
+direct measurement that MTP is not garbling output on this configuration — a garbling
+failure would show as near-zero accuracy with a high `no_answer` count, which is precisely
+the failure mode reported against MTP elsewhere.
+
+The 6 misses were inspected individually rather than trusted as an aggregate; all are
+genuine arithmetic errors (48 vs 44, 105 vs 75, 600 vs 1000, 40 vs 35, 3.5 vs 3, 9860.78 vs
+7400), not extraction artifacts.
+
+Raw per-item results: [`bench/results/quality_gsm8k_nvfp4_mtp3.json`](bench/results/quality_gsm8k_nvfp4_mtp3.json).
+
+**Not yet answered:** whether MTP *costs* accuracy relative to no speculative decoding.
+That needs the paired baseline arm, which is what `quality_compare.py` exists for. An
+accuracy number without its paired control does not tell you whether the speedup is free.
+
 ## Cross-hardware: the same checkpoint on DGX Spark (Spark Arena)
 
 [**Spark Arena**](https://spark-arena.com) is a community LLM leaderboard for NVIDIA DGX
