@@ -315,6 +315,64 @@ block when `reasoning_content` is missing, it parses reasoning back out of inlin
 above is prompt rendering only. `bench/multiturn_test.py` runs the behavioural check
 (15-turn loop, measuring answer length after `</think>` per turn).
 
+## Why MTP garbles with TurboQuant KV: the checkpoint ships FP8 KV scales
+
+SGLang's [Qwen3.8-27B cookbook](https://docs.sglang.io/cookbook/autoregressive/Qwen/Qwen3.8-27B)
+supplies the mechanism our experiments only established as a correlation:
+
+> "The NVFP4 checkpoint declares `kv_cache_quant_algo: FP8`; SGLang's default
+> `--kv-cache-dtype auto` honors it, so the KV pool runs in **fp8_e4m3 with the
+> checkpoint's calibration scales** automatically."
+
+**The checkpoint is calibrated for FP8 KV.** Forcing `turboquant_3bit_nc` / `turboquant_4bit_nc`
+discards those calibration scales and quantizes KV to a precision the model was never
+calibrated for. Speculative decoding is maximally exposed to that, because the MTP draft head
+reads the same KV the target model does — so draft/target divergence compounds into
+repetition collapse.
+
+That predicts exactly what we measured:
+
+| KV dtype | Calibrated? | MTP result |
+|---|---|---|
+| fp8 | **yes, ships with the checkpoint** | **lossless** — GSM8K 97.0%, 0 discordant items in 200 paired |
+| turboquant 4-bit | no | **garbled**, rep=224, 2/2 runs |
+| turboquant 3-bit | no | **garbled**, rep=232, 4/4 runs across two pin sizes |
+| turboquant, MTP K1 | no | **engine crash** (HTTP 500), 4/4 runs |
+
+**Rule: do not override the KV dtype on a checkpoint that ships KV calibration scales, and
+especially not while speculative decoding is on.** The TurboQuant recipe turns MTP off to
+work around this; the cause is the KV override it also introduces.
+
+### SGLang independently confirms our architecture numbers
+
+Useful as a cross-check on our own derivation from `config.json`:
+
+| Quantity | SGLang cookbook | Our derivation |
+|---|---|---|
+| Layer layout | 16 × [3 × GDN → 1 × Gated Attention] | 48 linear : 16 full ✅ |
+| Full attention | GQA 24/4, head_dim 256 | same ✅ |
+| **KV per token** | **32.8 KB** | **32,768 bytes** ✅ |
+| State bound | *"on small-VRAM cards the state pool bounds concurrency long before KV does"* | our Mamba-block ceiling ✅ |
+
+### Their tuning guidance, worth stealing
+
+- **`--chunked-prefill-size 2048`**, not 512: *"decode steps stall behind each prefill chunk
+  on hybrid GDN models, and 8192-token chunks stall them ~600 ms at a time"*. The TurboQuant
+  recipe's 512 is on the other side of the optimum, and vLLM's equivalent is
+  `--max-num-batched-tokens`.
+- **MTP + FlashInfer needs a recent FlashInfer build** — *"requires a FlashInfer build whose
+  prefill plan accepts `uniform_q_len` (newer than 0.6.15.post1); otherwise run spec with
+  `--attention-backend triton`"*. Our vLLM logged `flashinfer-cubin package was not found` and
+  `FlashInfer unavailable since nvcc was not found` at startup, yet still selected the
+  FlashInfer backend — so this is a live suspect for our garbling, independent of the KV
+  calibration issue.
+- **`--mamba-radix-cache-strategy extra_buffer_lazy`** drops state cost per request from 5
+  slots to 4 "at no accuracy cost".
+- An alternative NVFP4 checkpoint exists: **`RadixArk/Qwen3.8-27B-NVFP4`** (ModelOpt-quantized,
+  21.93 GB) versus Unsloth's compressed-tensors build (23.44 GB). It pushes more weight into
+  FP4 (9.19B vs 7.49B packed) and less into FP8 (7.21B vs 10.62B). Note SGLang's doc says
+  "~16.5GB", which does not match the actual repo size of 21.93 GB.
+
 ## Same GPU, same checkpoint: the TurboQuant recipe
 
 [ayayalar/Qwen3.8-27B-NVFP4-TurboQuant](https://github.com/ayayalar/Qwen3.8-27B-NVFP4-TurboQuant)
@@ -389,11 +447,30 @@ Put beside our other measurement, this sharpens the picture rather than simply c
 | **3-bit turboquant** | 262k cfg | K3 | **degenerate** at an 8k prompt, rep=232 |
 
 Their conclusion was *"MTP + this model's KV path is the garbler, not the KV quant itself."*
-Our data suggests it is specifically the **interaction of MTP with aggressively quantized
-KV**: with fp8 KV, MTP is provably lossless here; with 3-bit KV it collapses. We have not
-tested MTP with 4-bit KV (L2 would not boot), which is the gap between the two claims.
+Our data suggests it may instead be the **interaction of MTP with aggressively quantized
+KV**: with fp8 KV, MTP is provably lossless here; with 3-bit KV it collapsed.
 
-**Practical upshot: use MTP with fp8 KV. Do not combine MTP with 3-bit KV.**
+**How strong is that? Weaker than the sentence above sounds — read this before relying on
+it.** The degeneration is **a single observation**: one arm, one 8k prompt, one run. It was
+never repeated, and the 64k/131k probes in that arm died of OOM rather than degenerating,
+so they carry no information about garbling. We also never tested MTP with 4-bit KV, because
+L2 would not boot, which is precisely the gap between our claim and theirs.
+
+There is also a specific reason the result may not generalise across configurations. At the
+5 GiB pin vLLM logged:
+
+```
+WARNING [kv_cache_utils.py:1261] Add 3 padding layers, may waste at most 6.25% KV cache memory
+```
+
+A different pin size produces a different padding-layer geometry in the KV cache, which the
+MTP path reads from. That is a hypothesis, not a verified mechanism — but it is enough that
+"3-bit + MTP garbles" should not be assumed to hold at every pin size.
+
+**Practical upshot, stated at the confidence the evidence supports:** MTP with fp8 KV is
+measured-clean and safe (n=200, paired, zero discordant items). MTP with 3-bit KV degenerated
+once and should be treated as suspect until repeated — **verify it yourself on your own
+configuration rather than trusting either this repo or the single-run claim it came from.**
 
 ### Their MTP warning — and why we still recommend it
 
