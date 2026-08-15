@@ -113,6 +113,8 @@ Each of these cost a boot cycle. All are verified on this machine.
 | FlashAttention rejected, falls back to FlashInfer | `FP8 KV cache requires FA3 on SM90 or FA4 on SM100` — neither exists for sm_120 | expected; `TRITON_ATTN` is the other valid backend |
 | Attention block size silently becomes 1568 tokens | vLLM pads it so the attention page size ≥ the Mamba page size, then pads Mamba by 0.13% to make them equal | informational, but it makes block-count arithmetic non-obvious |
 | Server vanishes between commands | WSL2 shuts the VM down when idle, killing the server and clearing `/tmp` | log to `$HOME`, and run boot + benchmark inside **one** long-lived process |
+| `--max-num-batched-tokens 16384` refuses to start: *"1.87 GiB KV cache is needed, which is larger than the available KV cache memory (1.42 GiB)"* | larger batched-token budgets consume activation memory, which comes straight out of KV. On 32 GB with MTP K3 it drops available KV from 3.00 GiB to 1.42 GiB — below one 32k request | this value is copied from DGX Spark recipes, where a node has **128 GB unified memory**. It does not transfer to a 32 GB card. See the sweep below |
+| With MTP enabled, cudagraphs silently downgrade | *"CUDAGraphMode.FULL_AND_PIECEWISE is not supported with spec-decode for attention backend FlashInferBackend … setting cudagraph_mode=PIECEWISE"* | informational, but it means our MTP numbers are on PIECEWISE cudagraphs. `triton_attn` may support more — untested |
 
 ## Measured memory (vLLM 0.27.1, `--gpu-memory-utilization 0.90`, 32k context, FP8 KV)
 
@@ -310,6 +312,79 @@ block when `reasoning_content` is missing, it parses reasoning back out of inlin
 **Not yet verified here:** that either fix resolves the truncation *behaviourally*. The
 above is prompt rendering only. `bench/multiturn_test.py` runs the behavioural check
 (15-turn loop, measuring answer length after `</think>` per turn).
+
+## Same GPU, same checkpoint: the TurboQuant recipe
+
+[ayayalar/Qwen3.8-27B-NVFP4-TurboQuant](https://github.com/ayayalar/Qwen3.8-27B-NVFP4-TurboQuant)
+is the closest possible reference: **same model** (`unsloth/Qwen3.8-27B-NVFP4`), **same GPU**
+(RTX 5090, 32 GB), **same vLLM 0.27.1**. It targets the full 262,144-token context rather
+than throughput, and its `CALIBRATION.md` is an unusually honest rejection log. Credit to
+its author — several of the findings below are theirs, not ours.
+
+**Independent cross-validation of our throughput.** Their no-MTP figures are ~55 tok/s
+single-stream and ~197 aggregate at 4-way concurrency. Our arm A measured **51.5–52.5** and
+**180.9**. Two testers, same hardware, within ~7%.
+
+**Where their recipe goes further than ours:**
+
+| Their choice | Ours | Effect |
+|---|---|---|
+| `--kv-cache-dtype turboquant_4bit_nc` | `fp8` | 4-bit KV halves the footprint, reaching the **full 262k context**. They report fp8 capping near ~227k |
+| `--kv-cache-memory-bytes 5368709120` | auto-fit | auto-fit over-reserved **1.66×** (435k tokens), leaving ~0 MB for prefill → long requests OOM'd |
+| `--gpu-memory-utilization 0.98` | 0.90 | they call 0.98 the practical ceiling on 32 GB; we left headroom unused |
+| `--max-num-batched-tokens 512` | default | note this is the **opposite** of Spark Arena's 16384 — they optimise for context, Spark Arena for throughput. Neither transfers blindly |
+
+### Their MTP warning — and why we still recommend it
+
+Their calibration log rejects MTP outright:
+
+> *"Garbles output with 4-bit KV — empty `content`, no tool calls, degeneration into token
+> repetition. … Reproduced at 262144 with turboquant (both fp8 KV and 4-bit KV), with and
+> without the KV pin. … it boots cleanly — that's the trap."*
+
+We take that seriously, because MTP K3 is our headline recommendation and we had shipped it
+without inspecting a single output. So we checked. **On this configuration it does not
+reproduce:**
+
+| Probe | `finish_reason` | Max consecutive repeated token | Output |
+|---|---|---|---|
+| `What is 2+2?` | stop | 1 | `4` |
+| Capital of France | stop | 1 | `Paris` |
+| One-line Python add | stop | 1 | coherent |
+
+No repetition collapse, no empty content, no truncation.
+
+**Scope, precisely:** they reproduced at `num_speculative_tokens: 2` with a 262,144 context;
+we tested `num_speculative_tokens: 3` at 32,768 with short prompts, driver 610.74. Their
+finding may well hold at long context or at K2 — we have not tested there, and notably
+**K2 will not even serve on our machine**. Treat MTP as verified-clean only in the regime
+measured here.
+
+## Quality evaluation
+
+`bench/quality_eval.py` + `bench/quality_compare.py`. Reads GSM8K and MMLU from the local
+HF cache (no network, no `datasets` package), runs them against any OpenAI-compatible
+endpoint, and scores exact-match.
+
+Three design choices that are not optional for comparing quantizations:
+
+1. **Paired, not independent.** Per-item results are saved and `quality_compare.py` runs
+   **McNemar's exact test** on the items that flipped. At n=200 and ~85% accuracy the 95% CI
+   on a single run is roughly ±5 points, so two independent runs can differ by 4 points with
+   fully overlapping intervals and tell you nothing. The discordant pairs are the signal.
+2. **`no_answer` is scored separately from `incorrect`.** A config that exhausts its
+   generation budget mid-thinking is failing differently from one that reasons to a wrong
+   conclusion — and this model thinks at `xhigh` by default. Collapsing them hides the
+   mechanism.
+3. **Config is recorded and enforced.** `reasoning_effort`, `max_tokens` and the task are
+   written into the output, and the compare script **refuses** to compare runs that differ on
+   any of them, since the delta would not be attributable to the quantization. It also
+   rejects `reasoning_effort=medium` outright, that being a silent no-op.
+
+The harness was verified offline before use: loaders are deterministic across runs (same
+items every time, which is what makes pairing valid), the `</think>` stripping and answer
+extraction pass a case table including unclosed think blocks, and McNemar correctly
+recovers a synthetic 5-point effect at p=0.013.
 
 ## Cross-hardware: the same checkpoint on DGX Spark (Spark Arena)
 

@@ -24,3 +24,10 @@ spark-vllm-docker, llama-benchy and sparkrun projects. The individual
 Qwen3.8-27B submissions cited are by Drew Botwinick (FP8, 4 nodes) and Saiyam
 Pathak (NVFP4, single node). That data is theirs, not ours; it is included for
 cross-hardware comparison with attribution.
+
+Comparative recipe findings for the same model on the same GPU are cited from
+https://github.com/ayayalar/Qwen3.8-27B-NVFP4-TurboQuant (author: ayayalar),
+whose CALIBRATION.md documents the turboquant_4bit_nc KV path, KV pinning, and
+the MTP output-garbling report discussed in README.md. Those findings are
+theirs; our contribution is testing whether the MTP report reproduces on this
+configuration.
