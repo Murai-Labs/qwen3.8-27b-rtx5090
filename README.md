@@ -118,9 +118,16 @@ leave KV at fp8.
 
 | Config | KV pool | Result |
 |---|---|---|
-| fp8 KV, no MTP, 131k | 186,815 tok | **needle recall PASS at a 124,326-token prompt** |
+| **fp8 KV + MTP K3, 100k** | — | **4/4 needle depths PASS, rep=1 at every depth, up to an 85,440-token prompt** |
+| fp8 KV, no MTP, 131k | 186,815 tok | needle recall PASS at a **124,326-token** prompt |
 | fp8 KV + MTP | — | **~110k ceiling** (131k needs 4.88 GiB vs 4.34 available; 112k needs 4.25 vs 4.16) |
 | turboquant 4-bit, no MTP, 262k | 306,325 tok | 8k PASS at 22.8 tok/s; **64k OOMs** |
+
+**MTP does not garble at long context with fp8 KV.** The TurboQuant calibration log rejects
+MTP partly on the grounds that it garbles at 262k *including* with fp8 KV. We tested exactly
+that — MTP K3, fp8 KV, prompts from 7,898 to 85,440 tokens — and got clean recall with
+`max_consecutive_repeat = 1` at every depth. Their observation is real (we reproduced it), but
+it does not generalise to fp8 KV.
 
 **262k is reachable in principle and not on a Windows desktop.** The
 [TurboQuant recipe](https://github.com/ayayalar/Qwen3.8-27B-NVFP4-TurboQuant) reaches it with
