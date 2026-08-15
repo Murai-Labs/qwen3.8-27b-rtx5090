@@ -253,10 +253,33 @@ With `preserve_thinking=false`:
 **Both still end with the same generation prompt** (`<|im_start|>assistant\n<think>\n`), so
 the live turn still thinks — only the poisoned history is removed.
 
-Why this plausibly truncates: the model is handed six in-context demonstrations of "open
-think, close it immediately, emit one short line", then asked to generate. There is a second
-cost too — `reasoning_content` exists only on the newest turn, so the rendered history
-*mutates* every round and prefix caching is invalidated.
+### What this does and does not cause
+
+Our first framing here was that the empty blocks plausibly *cause* the multi-turn
+truncation, on the reasoning that six in-context demonstrations of "open think, close it
+immediately, emit one short line" teach the model to do the same. **That framing is
+probably wrong**, and we never verified it behaviourally.
+
+A third-party behavioural audit A/B tested the stock and community templates over the same
+12-turn debugging session and reports: both templates truncate at **the same turn**, and
+both run 8 agentic tool-use turns with zero aborts. Their conclusion is that the truncation
+is **context exhaustion caused by the model's own verbosity** — it writes 8,000–12,000
+character answers unprompted, and a 12-turn session reached ~46,800 characters by turn 6.
+
+The dangerous part of their finding is the failure signature: turns return
+`finish_reason: length` after only ~2,900 of a 32,768-token generation budget, which reads
+as "raise `max_tokens`". Raising it does nothing, because the constraint was remaining
+*context*, not the generation budget. The fix is context headroom plus an explicit brevity
+instruction.
+
+We have not reproduced that audit. What we independently verified is narrower and still
+stands: the empty blocks are real, they are eliminated by either fix, and because
+`reasoning_content` exists only on the newest turn the rendered history *mutates* every
+round, which invalidates prefix caching. That last cost is real regardless of the
+truncation question.
+
+So: still set `preserve_thinking: false` — it removes real prompt garbage and restores
+prefix-cache stability. Do **not** expect it to fix multi-turn truncation.
 
 ### Two fixes, and they render identically
 
@@ -311,7 +334,8 @@ Settings worth borrowing from their write-up, and why:
 - **`--reasoning-parser qwen3`** — this model's default thinking effort is `xhigh` and it
   can emit tens of thousands of reasoning tokens before any answer. Without a reasoning
   parser those land in `content` and silently break clients that expect an answer.
-  Per-request override: `{"chat_template_kwargs": {"reasoning_effort": "medium"}}`.
+  Per-request override: `{"chat_template_kwargs": {"reasoning_effort": "low"}}` — **not
+  `medium`**, see below.
 - **`--kv-cache-dtype fp8`** — roughly doubles KV capacity; used here too.
 - **`--attention-backend triton_attn`** — they report FlashAttention failing on sm_121.
   On sm_120 we see the related constraint (FA3/FA4 required for FP8 KV), and vLLM selects
@@ -350,8 +374,25 @@ Client — **send this on every multi-turn request**:
 ```
 
 Without it the stock template poisons the history with empty think blocks and multi-turn
-agentic work truncates. Add `"reasoning_effort": "medium"` (or `"low"`) to the same object
-to cap the thinking budget; the default is `xhigh`.
+agentic work truncates. Add `"reasoning_effort": "low"` to the same object to cap the
+thinking budget; the default is `xhigh`. **Do not use `"medium"`** — see below.
+
+### `reasoning_effort=medium` is a silent no-op
+
+The template validates `medium` as a legal value, then has branches only for `xhigh` and
+`low`. Setting it leaves the reasoning instruction empty — so it is not a middle setting,
+it is *less* steering than the default, with no error to tell you. Verified by rendering:
+
+| `reasoning_effort` | system prompt | instruction emitted |
+|---|---|---|
+| unset | 297 chars | **xhigh** (this is the default) |
+| `xhigh` | 297 chars | xhigh |
+| `high` | 297 chars | xhigh (aliased to `xhigh`) |
+| **`medium`** | **60 chars** | **none — silently dropped** |
+| `low` | 226 chars | low |
+| anything else | raises | — |
+
+An earlier version of this README recommended `medium`. That was wrong.
 
 The three flags that matter most, in order: **MTP K3** (~2× decode), **`preserve_thinking:
 false`** (multi-turn correctness), **`--kv-cache-dtype fp8`** (~2× context).

@@ -50,5 +50,9 @@ exec "$VENV/bin/python" -m vllm.entrypoints.openai.api_server \
 # <think></think> on EVERY prior assistant turn, which truncates multi-turn
 # agentic work and invalidates prefix caching. See README.md.
 #
-# Per-request thinking budget:
-#     "chat_template_kwargs": {"reasoning_effort": "medium"}   # or "low"
+# Per-request thinking budget -- ONLY "xhigh" (default), "high" (alias for
+# xhigh) and "low" do anything. "medium" is accepted by the validator but has NO
+# branch in the template: it silently drops the reasoning instruction entirely,
+# rendering a 60-char system prompt against 297 at default. It is not a middle
+# setting, it is less steering than the default. Verified by rendering.
+#     "chat_template_kwargs": {"reasoning_effort": "low"}
