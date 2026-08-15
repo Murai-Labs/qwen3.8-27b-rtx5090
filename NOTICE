@@ -1,0 +1,17 @@
+Qwen3.8-27B on a single RTX 5090
+
+Copyright (c) 2026 Murai Labs
+
+This repository contains measurement data, reproducibility scripts and deployment
+configuration for serving Qwen3.8-27B (NVFP4) on a single NVIDIA GeForce RTX 5090
+(Blackwell, sm_120) under vLLM in WSL2.
+
+It is a third-party contribution. It is NOT an official Qwen, Alibaba, Unsloth,
+vLLM or NVIDIA release, and no endorsement by any of them is implied.
+
+Model weights and tokenizer are NOT included in this repository. Qwen3.8-27B is
+distributed by its authors under Apache-2.0; the NVFP4 quantization used here is
+published by Unsloth at unsloth/Qwen3.8-27B-NVFP4.
+
+The benchmark harness bench/bench_fixed.py is reused unmodified from
+https://github.com/Murai-Labs/dgx-spark-x-2-upstream (MIT, same authors).

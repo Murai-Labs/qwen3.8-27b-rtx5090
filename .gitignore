@@ -1,0 +1,5 @@
+# real cluster config stays local; ship .env.example only
+.env
+*.local
+__pycache__/
+*.pyc
