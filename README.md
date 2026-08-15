@@ -412,9 +412,32 @@ genuine arithmetic errors (48 vs 44, 105 vs 75, 600 vs 1000, 40 vs 35, 3.5 vs 3,
 
 Raw per-item results: [`bench/results/quality_gsm8k_nvfp4_mtp3.json`](bench/results/quality_gsm8k_nvfp4_mtp3.json).
 
-**Not yet answered:** whether MTP *costs* accuracy relative to no speculative decoding.
-That needs the paired baseline arm, which is what `quality_compare.py` exists for. An
-accuracy number without its paired control does not tell you whether the speedup is free.
+### The paired control: MTP costs nothing
+
+Same 200 items, same settings, the only difference being `--speculative-config`:
+
+| | baseline (no spec decode) | MTP K3 |
+|---|---|---|
+| Accuracy | **97.0%** | **97.0%** |
+| Median completion tokens | 236 | 242 |
+| `no_answer` | 0 | 0 |
+| Wall clock, same 200 items | **264 s** | **112 s** |
+
+Paired table: **both correct 194, only-baseline 0, only-MTP 0, both wrong 6.**
+McNemar exact two-sided **p = 1.0000**.
+
+**Zero discordant items** — not just equal accuracy, but the *same* 194 right and the *same*
+6 wrong. That is what correct speculative decoding should look like: MTP proposes draft
+tokens, the target model verifies them, and rejections are resampled, so at `temperature=0`
+the result is lossless. We measured the theory rather than assuming it.
+
+So on this configuration **the ~2× speedup is free**. The 264 s → 112 s wall clock on an
+identical real workload (2.36×) also confirms the synthetic decode benchmark independently.
+
+Caveats worth keeping: this is `temperature=0` on one task at n=200, and equality of
+*outcomes* is not equality of *tokens* — two runs can reach the same answer by different
+text. And it says nothing about long context, which is exactly where the MTP garbling was
+reported.
 
 ## Cross-hardware: the same checkpoint on DGX Spark (Spark Arena)
 
