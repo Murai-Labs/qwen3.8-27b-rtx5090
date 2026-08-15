@@ -311,7 +311,64 @@ block when `reasoning_content` is missing, it parses reasoning back out of inlin
 above is prompt rendering only. `bench/multiturn_test.py` runs the behavioural check
 (15-turn loop, measuring answer length after `</think>` per turn).
 
-## Reference point: the same model on DGX Spark
+## Cross-hardware: the same checkpoint on DGX Spark (Spark Arena)
+
+[**Spark Arena**](https://spark-arena.com) is a community LLM leaderboard for NVIDIA DGX
+Spark, maintained by **Drew Botwinick**, **Eugene Rakhmatulin (eugr)** and **Raphael
+Amorim**, built on three open-source tools they publish:
+[spark-vllm-docker](https://github.com/eugr/spark-vllm-docker),
+[llama-benchy](https://github.com/eugr/llama-benchy) and
+[sparkrun](https://github.com/eugr/sparkrun). Every entry publishes its full recipe YAML
+and raw benchmark CSV, which is what makes the comparison below possible at all — credit
+to them for publishing reproducible configs rather than screenshots.
+
+Two Qwen3.8-27B entries exist on their `tg128 (c1)` board. Snapshot of all 193 entries
+retained at
+[`bench/results/reference/spark-arena_tg128_c1.json`](bench/results/reference/spark-arena_tg128_c1.json)
+(generated 2026-08-15, fetched from their public `/static/snapshot/test` endpoint):
+
+| Rank | Entry | Runtime | Cluster | Spec decode | tok/s |
+|---|---|---|---|---|---|
+| 104 | `Qwen/Qwen3.8-27B-FP8` — submitted by Drew Botwinick | vLLM | **4 nodes** | MTP K3 | 39.17 |
+| 190 | `unsloth/Qwen3.8-27B-NVFP4` — submitted by Saiyam Pathak | vLLM | **single** | **none** | 11.48 |
+
+**Entry 190 is the same checkpoint this repo uses**, on one DGX Spark, and its recipe has
+no `speculative_config` — so the like-for-like comparison against our baseline is:
+
+| Setup | Spec decode | tok/s |
+|---|---|---|
+| 1× DGX Spark (GB10), NVFP4 | none | **11.48** |
+| **1× RTX 5090, NVFP4 (this repo, arm A)** | none | **51.5–52.5** — **~4.5×** |
+| 1× RTX 5090, NVFP4 (this repo, arm C) | MTP K3 | 97.3–107.6 |
+| 4× DGX Spark, FP8 | MTP K3 | 39.17 |
+
+**~4.5× per node with speculative decoding held off on both sides** is the defensible
+number. The 8–9× figure against our MTP arm is not like-for-like and should not be quoted.
+
+Two further caveats: their harness is `llama-benchy` generating 128 tokens, ours is
+`bench_fixed.py` generating 200, and metric definitions differ — on the FP8 entry's raw
+CSV, `t_s_req_mean` and `peak_ts_req_mean` differ by ~20%, which is exactly the
+"decode tok/s means three different things" trap. Treat the ordering as solid and the
+multiple as approximate.
+
+Worth noting on their side: a 4-node TP=4 cluster reaches 39.17 tok/s single-stream, only
+~3.4× a single node. Decode is bandwidth-bound, and sharding it across a network does not
+fix bandwidth.
+
+### Flags from their recipes worth stealing
+
+Their `spark-vllm-docker` / `sparkrun` recipes set several things this repo did not:
+
+| Flag | Why it matters here |
+|---|---|
+| `--max-num-batched-tokens 16384` | vLLM **explicitly warned us** that MTP dropped `max_num_scheduled_tokens` to 2048 and that this "may lead to suboptimal performance". We had not acted on it. |
+| `--enable-prefix-caching` | Ours ran with `enable_prefix_caching=False`. Large for multi-turn — and it only pays if history is stable, which is what `preserve_thinking: false` restores. |
+| `--load-format instanttensor` | Faster weight load; ours takes ~90 s per boot. |
+| `--mm-encoder-tp-mode data` | Vision tower placement. |
+| `--enable-auto-tool-choice --tool-call-parser qwen3_coder` | Required for structured tool calls. |
+| `--reasoning-parser qwen3` | Already in our `serve.sh`. |
+
+## Reference point: llama.cpp figures reported elsewhere
 
 [Weschera/Qwen3.8-27B-DGX-Spark-Quant-Ladder](https://github.com/Weschera/Qwen3.8-27B-DGX-Spark-Quant-Ladder)
 ran a quant ladder for this model on **DGX Spark (GB10, sm_121)** on release day. Those are

@@ -15,3 +15,12 @@ published by Unsloth at unsloth/Qwen3.8-27B-NVFP4.
 
 The benchmark harness bench/bench_fixed.py is reused unmodified from
 https://github.com/Murai-Labs/dgx-spark-x-2-upstream (MIT, same authors).
+
+Comparative benchmark data for NVIDIA DGX Spark under
+bench/results/reference/ is reproduced from Spark Arena
+(https://spark-arena.com), a community leaderboard maintained by Drew
+Botwinick, Eugene Rakhmatulin (eugr) and Raphael Amorim, and built on their
+spark-vllm-docker, llama-benchy and sparkrun projects. The individual
+Qwen3.8-27B submissions cited are by Drew Botwinick (FP8, 4 nodes) and Saiyam
+Pathak (NVFP4, single node). That data is theirs, not ours; it is included for
+cross-hardware comparison with attribution.
