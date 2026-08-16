@@ -3,3 +3,6 @@
 *.local
 __pycache__/
 *.pyc
+
+# smoke runs are wiring checks, not measurements
+bench/results/*/smoke.json
