@@ -63,7 +63,16 @@ def one_request(base_url, model, prompt, max_tokens, timeout):
                 usage = chunk["usage"]
             ch = (chunk.get("choices") or [{}])[0]
             delta = ch.get("delta") or {}
-            if delta.get("content") or delta.get("reasoning_content"):
+            # vLLM 0.27.1 names the thinking field `reasoning`, NOT
+            # `reasoning_content`. Counting only the latter means that with
+            # --reasoning-parser qwen3 the whole thinking phase is invisible:
+            # t_first lands on the first POST-thinking chunk while out_tok still
+            # comes from usage.completion_tokens (all 200 tokens), so the rate is
+            # divided by a window that excludes most of the generation and reads
+            # ~2x too high. If thinking consumes the entire budget there are no
+            # content chunks at all and the cell errors outright.
+            if (delta.get("content") or delta.get("reasoning_content")
+                    or delta.get("reasoning")):
                 now = time.perf_counter()
                 if t_first is None:
                     t_first = now
