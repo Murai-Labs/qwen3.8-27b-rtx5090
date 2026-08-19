@@ -1,0 +1,47 @@
+[
+  {
+    "label": "dflash2-n7",
+    "prompt_tokens": 256,
+    "concurrency": 1,
+    "max_tokens": 200,
+    "repeats": 3,
+    "prefill_tok_s": 478.75370235409264,
+    "decode_tok_s": 136.05853258753098,
+    "decode_spread": 38.04256656210167,
+    "ttft_s": 0.639159548000066,
+    "aggregate_tok_s": 94.59466306067844,
+    "aggregate_spread": 18.135653919829025,
+    "out_tok_min": 200,
+    "out_tok_max": 200
+  },
+  {
+    "label": "dflash2-n7",
+    "prompt_tokens": 2048,
+    "concurrency": 1,
+    "max_tokens": 200,
+    "repeats": 3,
+    "prefill_tok_s": 1329.3485681369548,
+    "decode_tok_s": 128.8668779622134,
+    "decode_spread": 20.104176333938298,
+    "ttft_s": 1.4270147390000147,
+    "aggregate_tok_s": 66.57558773414004,
+    "aggregate_spread": 4.121546710298134,
+    "out_tok_min": 200,
+    "out_tok_max": 200
+  },
+  {
+    "label": "dflash2-n7",
+    "prompt_tokens": 8192,
+    "concurrency": 1,
+    "max_tokens": 200,
+    "repeats": 3,
+    "prefill_tok_s": 2070.6473822905855,
+    "decode_tok_s": 115.51834419609996,
+    "decode_spread": 43.782379445464045,
+    "ttft_s": 3.5539609800000562,
+    "aggregate_tok_s": 38.64560355468596,
+    "aggregate_spread": 4.662074314956627,
+    "out_tok_min": 200,
+    "out_tok_max": 200
+  }
+]

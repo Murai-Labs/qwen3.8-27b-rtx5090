@@ -1,0 +1,2026 @@
+{
+ "label": "nospec",
+ "task": "gsm8k",
+ "n": 200,
+ "model": "qwen38",
+ "base_url": "http://127.0.0.1:8000/v1",
+ "reasoning_effort": "default(xhigh)",
+ "max_tokens": 2048,
+ "temperature": 0,
+ "preserve_thinking": false,
+ "accuracy": 0.95,
+ "accuracy_ci95": [
+  0.9104209437021562,
+  0.9726176509713551
+ ],
+ "counts": {
+  "correct": 190,
+  "incorrect": 3,
+  "no_answer": 7,
+  "error": 0
+ },
+ "median_completion_tokens": 203,
+ "elapsed_s": 1080.1,
+ "results": [
+  {
+   "id": "gsm8k-0",
+   "outcome": "correct",
+   "got": "18",
+   "gold": "18",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 146,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-6",
+   "outcome": "correct",
+   "got": "260",
+   "gold": "260",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 107,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-13",
+   "outcome": "correct",
+   "got": "18",
+   "gold": "18",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 399,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-19",
+   "outcome": "correct",
+   "got": "6",
+   "gold": "6",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 202,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-26",
+   "outcome": "correct",
+   "got": "243",
+   "gold": "243",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 206,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-32",
+   "outcome": "correct",
+   "got": "35",
+   "gold": "35",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 107,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-39",
+   "outcome": "correct",
+   "got": "18",
+   "gold": "18",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 855,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-46",
+   "outcome": "correct",
+   "got": "163",
+   "gold": "163",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 199,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-52",
+   "outcome": "correct",
+   "got": "15",
+   "gold": "15",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 213,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-59",
+   "outcome": "correct",
+   "got": "187",
+   "gold": "187",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 60,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-65",
+   "outcome": "correct",
+   "got": "36",
+   "gold": "36",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 258,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-72",
+   "outcome": "correct",
+   "got": "221",
+   "gold": "221",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 119,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-79",
+   "outcome": "correct",
+   "got": "70",
+   "gold": "70",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 75,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-85",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "44",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-92",
+   "outcome": "correct",
+   "got": "4",
+   "gold": "4",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 227,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-98",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 495,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-105",
+   "outcome": "correct",
+   "got": "20",
+   "gold": "20",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 80,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-112",
+   "outcome": "correct",
+   "got": "24",
+   "gold": "24",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 214,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-118",
+   "outcome": "correct",
+   "got": "4",
+   "gold": "4",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 165,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-125",
+   "outcome": "correct",
+   "got": "10",
+   "gold": "10",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 930,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-131",
+   "outcome": "correct",
+   "got": "940",
+   "gold": "940",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 96,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-138",
+   "outcome": "correct",
+   "got": "105",
+   "gold": "105",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 384,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-145",
+   "outcome": "correct",
+   "got": "4000",
+   "gold": "4000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 165,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-151",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 276,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-158",
+   "outcome": "correct",
+   "got": "34",
+   "gold": "34",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 136,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-164",
+   "outcome": "correct",
+   "got": "15",
+   "gold": "15",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 309,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-171",
+   "outcome": "correct",
+   "got": "1210",
+   "gold": "1210",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 150,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-178",
+   "outcome": "correct",
+   "got": "122",
+   "gold": "122",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 192,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-184",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "25",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-191",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 187,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-197",
+   "outcome": "correct",
+   "got": "6277",
+   "gold": "6277",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 160,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-204",
+   "outcome": "correct",
+   "got": "98",
+   "gold": "98",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 184,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-211",
+   "outcome": "correct",
+   "got": "4",
+   "gold": "4",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 216,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-217",
+   "outcome": "correct",
+   "got": "15",
+   "gold": "15",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 63,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-224",
+   "outcome": "correct",
+   "got": "180",
+   "gold": "180",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 123,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-230",
+   "outcome": "correct",
+   "got": "276000",
+   "gold": "276000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 331,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-237",
+   "outcome": "correct",
+   "got": "90",
+   "gold": "90",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 134,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-244",
+   "outcome": "correct",
+   "got": "20",
+   "gold": "20",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 622,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-250",
+   "outcome": "correct",
+   "got": "17",
+   "gold": "17",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 260,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-257",
+   "outcome": "correct",
+   "got": "5600",
+   "gold": "5600",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 265,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-263",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 156,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-270",
+   "outcome": "correct",
+   "got": "762",
+   "gold": "762",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 79,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-276",
+   "outcome": "correct",
+   "got": "9",
+   "gold": "9",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 253,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-283",
+   "outcome": "correct",
+   "got": "68",
+   "gold": "68",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 832,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-290",
+   "outcome": "correct",
+   "got": "390",
+   "gold": "390",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 198,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-296",
+   "outcome": "correct",
+   "got": "3",
+   "gold": "3",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 190,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-303",
+   "outcome": "correct",
+   "got": "1300",
+   "gold": "1300",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 472,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-309",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 277,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-316",
+   "outcome": "correct",
+   "got": "156",
+   "gold": "156",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 476,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-323",
+   "outcome": "correct",
+   "got": "75",
+   "gold": "75",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 525,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-329",
+   "outcome": "correct",
+   "got": "14",
+   "gold": "14",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 79,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-336",
+   "outcome": "correct",
+   "got": "72",
+   "gold": "72",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 262,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-342",
+   "outcome": "correct",
+   "got": "87",
+   "gold": "87",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 130,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-349",
+   "outcome": "correct",
+   "got": "2640",
+   "gold": "2640",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 178,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-356",
+   "outcome": "correct",
+   "got": "21",
+   "gold": "21",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 187,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-362",
+   "outcome": "correct",
+   "got": "23",
+   "gold": "23",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 188,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-369",
+   "outcome": "correct",
+   "got": "1198",
+   "gold": "1198",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 419,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-375",
+   "outcome": "correct",
+   "got": "48",
+   "gold": "48",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 123,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-382",
+   "outcome": "correct",
+   "got": "350",
+   "gold": "350",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 377,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-389",
+   "outcome": "correct",
+   "got": "6",
+   "gold": "6",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 271,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-395",
+   "outcome": "correct",
+   "got": "38",
+   "gold": "38",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 309,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-402",
+   "outcome": "correct",
+   "got": "4",
+   "gold": "4",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 170,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-408",
+   "outcome": "correct",
+   "got": "20",
+   "gold": "20",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 293,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-415",
+   "outcome": "correct",
+   "got": "350",
+   "gold": "350",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 410,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-422",
+   "outcome": "correct",
+   "got": "284",
+   "gold": "284",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 380,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-428",
+   "outcome": "correct",
+   "got": "26",
+   "gold": "26",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 557,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-435",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 106,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-441",
+   "outcome": "correct",
+   "got": "80",
+   "gold": "80",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 171,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-448",
+   "outcome": "correct",
+   "got": "539",
+   "gold": "539",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 258,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-455",
+   "outcome": "correct",
+   "got": "1920",
+   "gold": "1920",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 195,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-461",
+   "outcome": "correct",
+   "got": "9",
+   "gold": "9",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 134,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-468",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 313,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-474",
+   "outcome": "correct",
+   "got": "80",
+   "gold": "80",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 144,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-481",
+   "outcome": "correct",
+   "got": "84",
+   "gold": "84",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 176,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-488",
+   "outcome": "correct",
+   "got": "6",
+   "gold": "6",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 111,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-494",
+   "outcome": "correct",
+   "got": "21",
+   "gold": "21",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 1280,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-501",
+   "outcome": "correct",
+   "got": "273",
+   "gold": "273",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 172,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-507",
+   "outcome": "correct",
+   "got": "2",
+   "gold": "2",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 199,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-514",
+   "outcome": "correct",
+   "got": "90000",
+   "gold": "90000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 216,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-521",
+   "outcome": "correct",
+   "got": "39",
+   "gold": "39",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 265,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-527",
+   "outcome": "correct",
+   "got": "48",
+   "gold": "48",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 404,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-534",
+   "outcome": "correct",
+   "got": "300",
+   "gold": "300",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 779,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-540",
+   "outcome": "correct",
+   "got": "39",
+   "gold": "39",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 677,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-547",
+   "outcome": "correct",
+   "got": "81",
+   "gold": "81",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 1110,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-553",
+   "outcome": "correct",
+   "got": "92",
+   "gold": "92",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 124,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-560",
+   "outcome": "correct",
+   "got": "45",
+   "gold": "45",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 121,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-567",
+   "outcome": "correct",
+   "got": "9",
+   "gold": "9",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 256,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-573",
+   "outcome": "correct",
+   "got": "600",
+   "gold": "600",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 160,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-580",
+   "outcome": "correct",
+   "got": "500",
+   "gold": "500",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 611,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-586",
+   "outcome": "correct",
+   "got": "800",
+   "gold": "800",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 226,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-593",
+   "outcome": "correct",
+   "got": "3",
+   "gold": "3",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 214,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-600",
+   "outcome": "correct",
+   "got": "10",
+   "gold": "10",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 78,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-606",
+   "outcome": "correct",
+   "got": "6",
+   "gold": "6",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 542,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-613",
+   "outcome": "correct",
+   "got": "93000",
+   "gold": "93000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 145,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-619",
+   "outcome": "correct",
+   "got": "76",
+   "gold": "76",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 156,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-626",
+   "outcome": "correct",
+   "got": "72",
+   "gold": "72",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 235,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-633",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 143,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-639",
+   "outcome": "correct",
+   "got": "216",
+   "gold": "216",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 127,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-646",
+   "outcome": "correct",
+   "got": "79",
+   "gold": "79",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 134,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-652",
+   "outcome": "correct",
+   "got": "75",
+   "gold": "75",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 803,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-659",
+   "outcome": "correct",
+   "got": "3",
+   "gold": "3",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 251,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-666",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 314,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-672",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "2",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-679",
+   "outcome": "correct",
+   "got": "576",
+   "gold": "576",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 103,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-685",
+   "outcome": "correct",
+   "got": "14",
+   "gold": "14",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 70,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-692",
+   "outcome": "correct",
+   "got": "32",
+   "gold": "32",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 301,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-699",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 104,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-705",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 133,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-712",
+   "outcome": "correct",
+   "got": "14",
+   "gold": "14",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 240,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-718",
+   "outcome": "correct",
+   "got": "2",
+   "gold": "2",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 79,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-725",
+   "outcome": "correct",
+   "got": "25",
+   "gold": "25",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 563,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-732",
+   "outcome": "correct",
+   "got": "87",
+   "gold": "87",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 148,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-738",
+   "outcome": "correct",
+   "got": "4",
+   "gold": "4",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 127,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-745",
+   "outcome": "correct",
+   "got": "1100",
+   "gold": "1100",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 297,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-751",
+   "outcome": "correct",
+   "got": "43",
+   "gold": "43",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 197,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-758",
+   "outcome": "correct",
+   "got": "133",
+   "gold": "133",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 89,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-765",
+   "outcome": "correct",
+   "got": "490",
+   "gold": "490",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 157,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-771",
+   "outcome": "correct",
+   "got": "3",
+   "gold": "3",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 154,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-778",
+   "outcome": "correct",
+   "got": "38",
+   "gold": "38",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 175,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-784",
+   "outcome": "correct",
+   "got": "15",
+   "gold": "15",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 186,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-791",
+   "outcome": "correct",
+   "got": "100",
+   "gold": "100",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 86,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-797",
+   "outcome": "correct",
+   "got": "540",
+   "gold": "540",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 96,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-804",
+   "outcome": "correct",
+   "got": "20",
+   "gold": "20",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 112,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-811",
+   "outcome": "correct",
+   "got": "60",
+   "gold": "60",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 203,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-817",
+   "outcome": "correct",
+   "got": "15",
+   "gold": "15",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 84,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-824",
+   "outcome": "correct",
+   "got": "52",
+   "gold": "52",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 95,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-830",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "1128",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-837",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 435,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-844",
+   "outcome": "correct",
+   "got": "180",
+   "gold": "180",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 550,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-850",
+   "outcome": "correct",
+   "got": "70",
+   "gold": "70",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 165,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-857",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "14000",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-863",
+   "outcome": "correct",
+   "got": "110",
+   "gold": "110",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 157,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-870",
+   "outcome": "correct",
+   "got": "40",
+   "gold": "40",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 159,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-877",
+   "outcome": "correct",
+   "got": "7000",
+   "gold": "7000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 382,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-883",
+   "outcome": "correct",
+   "got": "25",
+   "gold": "25",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 334,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-890",
+   "outcome": "correct",
+   "got": "25",
+   "gold": "25",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 196,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-896",
+   "outcome": "correct",
+   "got": "250",
+   "gold": "250",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 147,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-903",
+   "outcome": "correct",
+   "got": "16",
+   "gold": "16",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 147,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-910",
+   "outcome": "correct",
+   "got": "700",
+   "gold": "700",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 125,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-916",
+   "outcome": "correct",
+   "got": "14",
+   "gold": "14",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 386,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-923",
+   "outcome": "correct",
+   "got": "2",
+   "gold": "2",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 558,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-929",
+   "outcome": "correct",
+   "got": "60",
+   "gold": "60",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 77,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-936",
+   "outcome": "correct",
+   "got": "250",
+   "gold": "250",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 471,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-943",
+   "outcome": "correct",
+   "got": "50",
+   "gold": "50",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 332,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-949",
+   "outcome": "correct",
+   "got": "42",
+   "gold": "42",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 159,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-956",
+   "outcome": "correct",
+   "got": "1",
+   "gold": "1",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 224,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-962",
+   "outcome": "incorrect",
+   "got": "600",
+   "gold": "1000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 285,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-969",
+   "outcome": "correct",
+   "got": "1800",
+   "gold": "1800",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 228,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-976",
+   "outcome": "correct",
+   "got": "540",
+   "gold": "540",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 495,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-982",
+   "outcome": "correct",
+   "got": "12",
+   "gold": "12",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 259,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-989",
+   "outcome": "correct",
+   "got": "45",
+   "gold": "45",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 1328,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-995",
+   "outcome": "correct",
+   "got": "12",
+   "gold": "12",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 155,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1002",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 139,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1009",
+   "outcome": "correct",
+   "got": "1875",
+   "gold": "1875",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 399,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1015",
+   "outcome": "correct",
+   "got": "78",
+   "gold": "78",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 169,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1022",
+   "outcome": "correct",
+   "got": "12",
+   "gold": "12",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 407,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1028",
+   "outcome": "correct",
+   "got": "200",
+   "gold": "200",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 797,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1035",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "35",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1042",
+   "outcome": "incorrect",
+   "got": "3.5",
+   "gold": "3",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 2015,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1048",
+   "outcome": "incorrect",
+   "got": "9860.78",
+   "gold": "7400",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 435,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1055",
+   "outcome": "correct",
+   "got": "2304",
+   "gold": "2304",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 139,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1061",
+   "outcome": "correct",
+   "got": "58",
+   "gold": "58",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 102,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1068",
+   "outcome": "correct",
+   "got": "24",
+   "gold": "24",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 471,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1074",
+   "outcome": "correct",
+   "got": "750",
+   "gold": "750",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 619,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1081",
+   "outcome": "correct",
+   "got": "195",
+   "gold": "195",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 128,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1088",
+   "outcome": "correct",
+   "got": "30",
+   "gold": "30",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 1134,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1094",
+   "outcome": "correct",
+   "got": "25",
+   "gold": "25",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 489,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1101",
+   "outcome": "correct",
+   "got": "16",
+   "gold": "16",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 123,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1107",
+   "outcome": "correct",
+   "got": "360",
+   "gold": "360",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 163,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1114",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 119,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1121",
+   "outcome": "correct",
+   "got": "35",
+   "gold": "35",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 158,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1127",
+   "outcome": "correct",
+   "got": "750",
+   "gold": "750",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 246,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1134",
+   "outcome": "correct",
+   "got": "7",
+   "gold": "7",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 147,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1140",
+   "outcome": "correct",
+   "got": "27",
+   "gold": "27",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 286,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1147",
+   "outcome": "correct",
+   "got": "22",
+   "gold": "22",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 548,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1154",
+   "outcome": "correct",
+   "got": "30",
+   "gold": "30",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 113,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1160",
+   "outcome": "correct",
+   "got": "1125",
+   "gold": "1125",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 160,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1167",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 99,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1173",
+   "outcome": "correct",
+   "got": "10",
+   "gold": "10",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 249,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1180",
+   "outcome": "correct",
+   "got": "5600",
+   "gold": "5600",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 227,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1187",
+   "outcome": "correct",
+   "got": "5",
+   "gold": "5",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 677,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1193",
+   "outcome": "correct",
+   "got": "9",
+   "gold": "9",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 269,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1200",
+   "outcome": "correct",
+   "got": "8",
+   "gold": "8",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 126,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1206",
+   "outcome": "correct",
+   "got": "40000",
+   "gold": "40000",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 254,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1213",
+   "outcome": "no_answer",
+   "got": null,
+   "gold": "31",
+   "finish_reason": "length",
+   "think_closed": false,
+   "completion_tokens": 2048,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1220",
+   "outcome": "correct",
+   "got": "32",
+   "gold": "32",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 168,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1226",
+   "outcome": "correct",
+   "got": "90",
+   "gold": "90",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 596,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1233",
+   "outcome": "correct",
+   "got": "81",
+   "gold": "81",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 258,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1239",
+   "outcome": "correct",
+   "got": "50",
+   "gold": "50",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 253,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1246",
+   "outcome": "correct",
+   "got": "3360",
+   "gold": "3360",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 123,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1253",
+   "outcome": "correct",
+   "got": "120",
+   "gold": "120",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 189,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1259",
+   "outcome": "correct",
+   "got": "7200",
+   "gold": "7200",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 203,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1266",
+   "outcome": "correct",
+   "got": "147",
+   "gold": "147",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 155,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1272",
+   "outcome": "correct",
+   "got": "296",
+   "gold": "296",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 175,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1279",
+   "outcome": "correct",
+   "got": "180",
+   "gold": "180",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 126,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1286",
+   "outcome": "correct",
+   "got": "105",
+   "gold": "105",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 83,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1292",
+   "outcome": "correct",
+   "got": "67",
+   "gold": "67",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 220,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1299",
+   "outcome": "correct",
+   "got": "13",
+   "gold": "13",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 206,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1305",
+   "outcome": "correct",
+   "got": "2325",
+   "gold": "2325",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 94,
+   "subject": null
+  },
+  {
+   "id": "gsm8k-1312",
+   "outcome": "correct",
+   "got": "180",
+   "gold": "180",
+   "finish_reason": "stop",
+   "think_closed": true,
+   "completion_tokens": 287,
+   "subject": null
+  }
+ ]
+}

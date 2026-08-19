@@ -274,6 +274,27 @@ available`; and it **refuses a quantized `lm_head`**, which this checkpoint has
 Full measurements, the arithmetic, and a separate WSL2-fatal cold-compile bug in that vLLM
 build: [`docs/dflash2-does-not-fit.md`](docs/dflash2-does-not-fit.md).
 
+**On llama.cpp it fits, and it is the fastest single-stream config measured here.** The GGUF
+drafter is **1.06 GiB** rather than 3.58, so the memory wall disappears (peak 24.1 of 32 GiB).
+Measured with this same harness, concurrency 1, on a Q4_K_M target:
+
+| arm | p256 | p2048 | p8192 |
+|---|---:|---:|---:|
+| llama.cpp, no speculation | 66.8 | 66.1 | 64.6 |
+| llama.cpp MTP K3 | 117.5 | 114.3 | 112.3 |
+| **llama.cpp DFlash 2, n=4** | **149.5** | **135.1** | **117.1** |
+| this recipe (vLLM NVFP4 + MTP K3) | 107.6 | 97.3 | 98.2 |
+
+It is also the *more faithful* drafter: **1 discordant GSM8K item against unspeculated decoding,
+where MTP moved 6.** But the win is a cheaper drafter, not a better one — MTP with a full-precision
+head actually drafts longer (3.41 vs 2.94 accepted tokens) and is still slower, and upstream's
+acceptance-length claim inverts on this hardware.
+
+**The recipe does not change yet**: concurrency 1 only (both engines have open concurrency bugs on
+sm_120 today), an unmerged PR, and the Q4_K_M-vs-NVFP4 quality question is *unmeasured* — the
+paired test refused it for mismatched `reasoning_effort`, so 95.0% here must not be read against
+97.0% above. Full numbers: [`docs/dflash2-on-llamacpp.md`](docs/dflash2-on-llamacpp.md).
+
 ## Gotchas
 
 | Symptom | Cause | Fix |
