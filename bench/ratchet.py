@@ -108,11 +108,15 @@ class Engine:
 
     def argv(self):
         a = self.cfg["arms"][self.arm]
+        # $VARs are expanded in arm args so an arm can name a draft model on disk
+        # without hardcoding somebody's home directory into arms.json. Introduced
+        # for the dflash2 arms, whose drafter is a second checkpoint.
+        expand = lambda xs: [os.path.expandvars(x) for x in xs]
         return ([self.python, "-m", "vllm.entrypoints.openai.api_server",
                  "--model", self.model,
                  "--served-model-name", self.cfg["common"].get("served_model_name", "qwen38"),
                  "--port", str(self.port)]
-                + list(self.cfg["common"]["args"]) + list(a["args"]))
+                + expand(self.cfg["common"]["args"]) + expand(a["args"]))
 
     def __enter__(self):
         self._kill_stale()

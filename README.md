@@ -249,6 +249,31 @@ selects FlashInfer regardless. Same failure pattern as `reasoning_effort=medium`
 accepted and then ignored. All measurements here are therefore on FlashInfer, which is what
 this model actually gets on sm_120.
 
+## DFlash 2 was evaluated and does not fit
+
+[DFlash 2](https://inco.ai/blog/dflash2/) (Inco AI, August 2026) is a block-diffusion drafter
+claiming **236 tok/s vs MTP's 178** on this exact model, on an H200. We built it, got it
+loading, and it **cannot be served here**: the 2B BF16 drafter plus the unquantized LM head it
+requires cost **+4.16 GiB** of weights, and this recipe has only **2.94 GiB** of KV cache to
+give up. Delete the entire cache and it still does not fit.
+
+```
+Model loading took 26.29 GiB memory        (this recipe, measured the same evening: 22.13 GiB)
+Available KV cache memory: -0.56 GiB       at this recipe's own flags
+```
+
+Even at `--max-model-len 4096 --max-num-seqs 1 --enforce-eager` it is still short (0.61 GiB
+available against 0.89 needed). The drafter is bigger than the cache; no flag closes that.
+
+Three other blockers were solved on the way and are worth knowing independently: vLLM support is
+still an **open PR** ([#52816](https://github.com/vllm-project/vllm/pull/52816)); the V2 model
+runner it forces needs `VLLM_WSL2_ENABLE_PIN_MEMORY=1` under WSL2 or it dies on `UVA is not
+available`; and it **refuses a quantized `lm_head`**, which this checkpoint has
+([`deploy/dequant_lm_head.py`](deploy/dequant_lm_head.py) patches that one tensor).
+
+Full measurements, the arithmetic, and a separate WSL2-fatal cold-compile bug in that vLLM
+build: [`docs/dflash2-does-not-fit.md`](docs/dflash2-does-not-fit.md).
+
 ## Gotchas
 
 | Symptom | Cause | Fix |

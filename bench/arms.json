@@ -70,6 +70,19 @@
                "--mamba-ssm-cache-dtype", "float16"],
       "suites": ["throughput", "quality"]
     },
+    "dflash2-k7": {
+      "desc": "DFlash 2 drafter (incoai/Qwen3.8-27B-DFlash2), 7 draft tokens, fp8 KV as the recipe. DOES NOT BOOT HERE: -0.56 GiB KV, the drafter costs more than the pool (docs/dflash2-does-not-fit.md). Needs the PR #52816 build (VENV_PY=$HOME/qwen38-dflash2/.venv/bin/python), VLLM_WSL2_ENABLE_PIN_MEMORY=1, and a target whose lm_head is unquantized (deploy/dequant_lm_head.py). Kept so it runs the day the target shrinks or the card grows.",
+      "args": ["--speculative-config",
+               "{\"method\":\"dflash\",\"model\":\"$HOME/models/Qwen3.8-27B-DFlash2\",\"num_speculative_tokens\":7}"],
+      "suites": ["throughput", "quality"]
+    },
+    "dflash2-k7-bf16kv": {
+      "desc": "Same drafter with the bf16 KV cache upstream said non-causal drafting was locked to (vLLM #41559, closed 2026-08-11). Costs ~half the KV pool; here to separate 'DFlash2 is slow' from 'DFlash2 could not use fp8 KV'. UNREACHED: the fp8 arm runs out of memory first, so this question is still open here.",
+      "args": ["--speculative-config",
+               "{\"method\":\"dflash\",\"model\":\"$HOME/models/Qwen3.8-27B-DFlash2\",\"num_speculative_tokens\":7}",
+               "--kv-cache-dtype", "bfloat16"],
+      "suites": ["throughput", "quality"]
+    },
     "mtp3-prefixcache": {
       "desc": "UNTRIED lever from README 'Worth stealing'. Prefix caching was never enabled here.",
       "args": ["--speculative-config", "{\"method\":\"mtp\",\"num_speculative_tokens\":3}",
